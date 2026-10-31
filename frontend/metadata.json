@@ -1,0 +1,6 @@
+{
+  "name": "Emergency Corridor Command Center",
+  "description": "Smart city traffic preemption simulation dashboard modeling emergency vehicle corridors, automated signal clearance sequences, and live safety telemetry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
