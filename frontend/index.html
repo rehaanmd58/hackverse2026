@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Transit Corridors — Smart City Traffic Command</title>
+    <meta name="description" content="Municipal emergency vehicle corridor preemption system providing automated green wave clearance, cross-traffic safety buffers, and real-time response analytics." />
+    <meta property="og:title" content="Emergency Transit Corridors — Smart City Traffic Command" />
+    <meta property="og:description" content="Municipal emergency vehicle corridor preemption system providing automated green wave clearance, cross-traffic safety buffers, and real-time response analytics." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Outfit, Plus Jakarta Sans, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-slate-100/70 text-slate-900 antialiased min-h-screen flex flex-col font-['Outfit',sans-serif] selection:bg-blue-600 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between gap-6 shrink-0 z-30 shadow-xs">
+      <!-- Brand & Sidebar Toggle -->
+      <div class="flex items-center gap-3">
+        <button id="btn-toggle-sidebar" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200" title="Toggle Navigation">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shadow-blue-500/25">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="text-base font-bold tracking-tight text-slate-900">METRO TRANSIT COMMAND</span>
+              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">SMART CITY SUITE</span>
+            </div>
+            <span class="text-xs text-slate-500 font-medium">Emergency Priority Corridor Network</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Clean, Intuitive Smart-City Indicators -->
+      <nav class="hidden lg:flex items-center gap-6 text-xs text-slate-600 font-mono">
+        <span class="flex items-center gap-2 font-semibold text-slate-800">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+          System Status: Active
+        </span>
+        <span aria-hidden="true" class="text-slate-300">·</span>
+        <span class="text-slate-600">Signal Synchronization: <strong class="text-slate-900 font-bold">Secure</strong></span>
+        <span aria-hidden="true" class="text-slate-300">·</span>
+        <span class="text-slate-600">Response Readiness: <strong class="text-emerald-700 font-bold">Optimal</strong></span>
+        <span aria-hidden="true" class="text-slate-300">·</span>
+        <span id="scada-utc-clock" class="text-slate-800 tabular-nums font-bold">12:00:00 PM</span>
+      </nav>
+
+      <!-- Right: Action Buttons -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="btn-header-home" class="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer hidden sm:block">
+          Overview
+        </button>
+
+        <button id="btn-header-quick-dispatch" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl transition-all whitespace-nowrap shadow-sm shadow-blue-600/25 flex items-center gap-2 cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span>Dispatch Suite</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Layout with Premium Charcoal Sidebar -->
+    <div class="flex flex-1 min-h-[calc(100vh-65px)] overflow-hidden">
+      <!-- Sleek Charcoal Sidebar -->
+      <aside id="app-sidebar" class="w-64 bg-slate-900 text-slate-300 border-r border-slate-800 flex flex-col justify-between p-4 shrink-0 z-20 shadow-xl transition-all duration-300 ease-in-out">
+        <div class="space-y-6">
+          <!-- Navigation Menu -->
+          <div>
+            <div class="sidebar-text-label text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-2 font-mono">Platform Portals</div>
+            <div class="space-y-1.5">
+              <!-- Tab 0: Home -->
+              <button id="nav-portal-0" class="sidebar-item-btn w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/30 transition-all cursor-pointer text-left">
+                <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <div class="sidebar-text-label flex flex-col">
+                  <span class="leading-tight font-bold">Home</span>
+                  <span class="text-[10px] text-blue-100 font-normal">Welcome & Overview</span>
+                </div>
+              </button>
+
+              <!-- Tab 1: Dispatch Portal -->
+              <button id="nav-portal-1" class="sidebar-item-btn w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all cursor-pointer text-left">
+                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                <div class="sidebar-text-label flex flex-col">
+                  <span class="leading-tight font-bold">Dispatch Portal</span>
+                  <span class="text-[10px] text-slate-500 font-normal">Route & Safety Settings</span>
+                </div>
+              </button>
+
+              <!-- Tab 2: Live Simulation -->
+              <button id="nav-portal-2" class="sidebar-item-btn w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all cursor-pointer text-left">
+                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <div class="sidebar-text-label flex flex-col">
+                  <span class="leading-tight font-bold">Live Simulation</span>
+                  <span class="text-[10px] text-slate-500 font-normal">Real-Time Corridors & Logs</span>
+                </div>
+              </button>
+
+              <!-- Tab 3: Impact & About -->
+              <button id="nav-portal-3" class="sidebar-item-btn w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all cursor-pointer text-left">
+                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="sidebar-text-label flex flex-col">
+                  <span class="leading-tight font-bold">Impact & About</span>
+                  <span class="text-[10px] text-slate-500 font-normal">Real-World Safety Research</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Corridor Settings (Sidebar Snapshot) -->
+          <div class="sidebar-extra-content bg-slate-800/70 border border-slate-700/60 rounded-xl p-3.5 text-xs space-y-2.5 font-mono">
+            <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase border-b border-slate-700/80 pb-1.5 flex justify-between items-center">
+              <span>Active Corridor</span>
+              <span class="text-emerald-400 font-bold">READY</span>
+            </div>
+            <div class="space-y-1.5 text-[11px] text-slate-300">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400">Traffic Density:</span>
+                <span id="sidebar-density-badge" class="font-bold text-white">Medium</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400">Intersections:</span>
+                <span id="sidebar-intersections-badge" class="font-bold text-white">3 Intersections</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400">Pedestrian Buffer:</span>
+                <span id="sidebar-ped-badge" class="font-bold text-white">12.0s</span>
+              </div>
+              <div class="flex justify-between items-center pt-1.5 border-t border-slate-700/80">
+                <span class="text-slate-400">Average Saved:</span>
+                <span id="sidebar-time-saved" class="font-bold text-emerald-400">72.8% (05m 15s)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="pt-3 border-t border-slate-800">
+          <button id="btn-sidebar-reset" class="sidebar-item-btn w-full py-2 px-3 text-xs font-mono font-medium text-slate-400 hover:text-white border border-slate-700/80 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span class="sidebar-text-label">Reset Standard Settings</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Viewport -->
+      <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+
+        <!-- ========================================================================= -->
+        <!-- PORTAL 0: WELCOMING HOME & OVERVIEW (DEFAULT VIEW)                         -->
+        <!-- ========================================================================= -->
+        <section id="portal-view-home" class="max-w-6xl mx-auto space-y-8">
+          <!-- Hero Section: Municipal Emergency Transit Preemption Grid -->
+          <div class="relative rounded-2xl overflow-hidden border border-slate-300/80 shadow-md bg-slate-950">
+            <img 
+              src="/src/assets/images/hero_traffic_command_center_1793434382767.jpg" 
+              alt="Municipal Emergency Transit Preemption Command Center" 
+              class="w-full h-80 sm:h-96 object-cover object-center opacity-45 mix-blend-luminosity filter contrast-125"
+              referrerpolicy="no-referrer"
+            />
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-transparent flex flex-col justify-center px-6 sm:px-10 lg:px-12">
+              <div class="flex items-center gap-2 mb-2.5 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+                <span>CITY TRAFFIC COMMAND // EMERGENCY CORRIDOR PRIORITY</span>
+              </div>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-3xl">
+                Smart City Emergency Transit Corridors
+              </h1>
+              <p class="text-sm md:text-base text-slate-300 max-w-2xl mt-3 leading-relaxed">
+                Clearing gridlocked city intersections automatically so ambulances and first responders save vital minutes safely—without startling motorists or endangering pedestrians.
+              </p>
+              
+              <!-- Primary CTAs -->
+              <div class="flex flex-wrap items-center gap-3.5 mt-7">
+                <button id="btn-hero-launch-dispatch" class="px-6 py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl transition-all shadow-md shadow-blue-600/30 flex items-center gap-2.5 cursor-pointer tracking-tight">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Launch Dispatch Suite</span>
+                </button>
+
+                <button id="btn-hero-view-monitor" class="px-5 py-3.5 text-sm font-bold text-slate-200 hover:text-white bg-slate-900/90 hover:bg-slate-900 border border-slate-700 rounded-xl transition-all flex items-center gap-2 cursor-pointer backdrop-blur-xs">
+                  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <span>View Live Simulation</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clean Intuitive KPI Metric Cards -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+              <span class="text-xs font-mono font-medium text-slate-500 uppercase">Average Time Saved</span>
+              <span class="text-2xl lg:text-3xl font-extrabold text-emerald-600 font-mono tabular-nums block my-1">72.8%</span>
+              <span class="text-xs text-slate-500">Saved vs normal congested traffic delay</span>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+              <span class="text-xs font-mono font-medium text-slate-500 uppercase">Active Corridor Range</span>
+              <span class="text-2xl lg:text-3xl font-extrabold text-slate-900 font-mono tabular-nums block my-1">450m</span>
+              <span class="text-xs text-slate-500">Automated signal detection window</span>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+              <span class="text-xs font-mono font-medium text-slate-500 uppercase">Safety Compliance</span>
+              <span class="text-2xl lg:text-3xl font-extrabold text-blue-600 font-mono tabular-nums block my-1">99.8%</span>
+              <span class="text-xs text-slate-500">Zero conflicting vehicle incursions</span>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow">
+              <span class="text-xs font-mono font-medium text-slate-500 uppercase">Signal Reliability</span>
+              <span class="text-2xl lg:text-3xl font-extrabold text-emerald-600 font-mono tabular-nums block my-1">100%</span>
+              <span class="text-xs text-slate-500">Verified clearance sequence health</span>
+            </div>
+          </div>
+
+          <!-- How It Works Feature Breakdown Cards -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+              <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">How Emergency Preemption Works</h2>
+                <p class="text-xs text-slate-500">Three automated steps that safely open city streets for first responders.</p>
+              </div>
+              <button id="btn-home-learn-impact" class="text-xs font-bold text-blue-600 hover:text-blue-700 font-mono flex items-center gap-1 cursor-pointer">
+                <span>Explore Full Impact</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <!-- Feature Card 1: Instant Dispatch -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm border border-blue-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-900">1. Instant Dispatch</h3>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Select route congestion level and the number of intersections to cross. The system instantly detects the approaching vehicle 450 meters out and prepares the route ahead of time.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[11px] font-mono text-slate-400">LEAD TIME: ~25s ADVANCE</span>
+                  <button class="btn-goto-dispatch text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer">Configure ➔</button>
+                </div>
+              </div>
+
+              <!-- Feature Card 2: Automated Safe Signals -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm border border-amber-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-900">2. Automated Safe Signals</h3>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Pedestrians finish crossing with a clear countdown, cross-traffic receives a safe yellow light before turning red, and a 2.0-second safety buffer clears the entire intersection box.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[11px] font-mono text-slate-400">SAFETY: FAIL-SAFE BUFFER</span>
+                  <button class="btn-goto-impact text-xs font-bold text-amber-700 hover:text-amber-800 cursor-pointer">Learn Safety ➔</button>
+                </div>
+              </div>
+
+              <!-- Feature Card 3: Live Time Comparison -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm border border-emerald-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-900">3. Live Time Comparison</h3>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    Watch response times drop by over 70% in real-time as intersections open seamlessly. Inspect live event streams and download audit logs with a single click.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[11px] font-mono text-slate-400">ANALYTICS: REAL-TIME</span>
+                  <button class="btn-goto-monitor text-xs font-bold text-emerald-700 hover:text-emerald-800 cursor-pointer">Open Monitor ➔</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PORTAL 1: DISPATCH PORTAL (ROUTE & CONFIGURATION)                          -->
+        <!-- ========================================================================= -->
+        <section id="portal-view-dispatch" class="max-w-5xl mx-auto space-y-6 hidden">
+          <!-- Page Header -->
+          <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
+            <div>
+              <h1 class="text-xl font-bold tracking-tight text-slate-900">Emergency Corridor Dispatch Portal</h1>
+              <p class="text-xs text-slate-500 mt-0.5">Configure route congestion, choose intersections to clear, and trigger an automated green corridor for first responders.</p>
+            </div>
+            <span class="text-xs font-mono text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-xl shadow-2xs">PORTAL 01 // DISPATCH</span>
+          </div>
+
+          <!-- Configuration Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left: Floating Frosted-Glass Card -->
+            <div class="lg:col-span-7 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-md space-y-5">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-blue-600"></div>
+                  <h2 class="text-sm font-bold text-slate-900 uppercase font-mono tracking-wider">Corridor Parameters</h2>
+                </div>
+                <span class="text-xs font-mono text-slate-400">AUTOMATED SIGNALS</span>
+              </div>
+
+              <!-- Form Inputs Form -->
+              <form id="dispatch-form" class="space-y-4" onsubmit="return false;">
+                <!-- Input 1: Traffic Density -->
+                <div class="space-y-1.5">
+                  <label for="input-density" class="block text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
+                    Traffic Congestion Level
+                  </label>
+                  <select id="input-density" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl p-3 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none font-mono cursor-pointer font-medium shadow-2xs">
+                    <option value="Low">Low Congestion — Off-Peak Flow (Fluid movement, minimal stopping)</option>
+                    <option value="Medium" selected>Medium Congestion — Standard City Flow (Moderate queues at lights)</option>
+                    <option value="Heavy">Heavy Congestion — Rush Hour Gridlock (Severe traffic backups)</option>
+                  </select>
+                  <p class="text-[11px] text-slate-500 font-mono">Sets the civilian queue clearance delay and baseline transit comparison.</p>
+                </div>
+
+                <!-- Input 2: Intersections to Cross -->
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label for="input-intersections" class="block text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
+                      Intersections to Cross (1 to 5)
+                    </label>
+                    <span id="intersections-count-label" class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200">
+                      3 Intersections (Maple, Grand, Civic Center)
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <button type="button" id="btn-decrease-intersections" class="w-9 h-9 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 font-mono font-bold flex items-center justify-center transition-colors cursor-pointer shadow-2xs">-</button>
+                    <input id="input-intersections" type="range" min="1" max="5" value="3" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+                    <button type="button" id="btn-increase-intersections" class="w-9 h-9 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 font-mono font-bold flex items-center justify-center transition-colors cursor-pointer shadow-2xs">+</button>
+                  </div>
+                  <!-- Node indicators -->
+                  <div class="grid grid-cols-5 gap-1.5 text-[10px] font-mono text-center">
+                    <span class="p-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold">1. Maple</span>
+                    <span class="p-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold">2. Grand</span>
+                    <span class="p-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold">3. Civic</span>
+                    <span class="p-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-400">4. Market</span>
+                    <span class="p-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-400">5. Metro</span>
+                  </div>
+                </div>
+
+                <!-- Input 3: Pedestrian Clearance Time -->
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <label for="input-ped-time" class="block text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
+                      Pedestrian Clearance Time
+                    </label>
+                    <span id="ped-time-label" class="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-300">
+                      12.0s
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <input id="input-ped-time" type="number" min="5" max="25" value="12" class="w-24 bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-blue-600 font-mono font-bold shadow-2xs" />
+                    <span class="text-xs text-slate-500 font-mono">seconds</span>
+                    <div class="flex gap-1.5 ml-auto font-mono text-[11px]">
+                      <button type="button" class="btn-ped-preset px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-val="8">8.0s Fast</button>
+                      <button type="button" class="btn-ped-preset px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 cursor-pointer font-bold bg-slate-100 shadow-2xs" data-val="12">12.0s Standard</button>
+                      <button type="button" class="btn-ped-preset px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-val="18">18.0s High Buffer</button>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-slate-500 font-mono">Guarantees pedestrians have sufficient time to finish crossing safely before traffic lights change.</p>
+                </div>
+
+                <!-- Dispatch Transmit Button -->
+                <div class="pt-4 border-t border-slate-100">
+                  <button id="btn-dispatch-vehicle" type="button" class="w-full py-4 px-6 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl transition-all shadow-md shadow-blue-600/30 flex items-center justify-center gap-2.5 cursor-pointer font-mono tracking-wider">
+                    <span id="dispatch-spinner" class="hidden">
+                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      </svg>
+                    </span>
+                    <svg id="dispatch-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span id="dispatch-btn-text">DISPATCH EMERGENCY CORRIDOR</span>
+                  </button>
+                  <p class="text-[11px] text-center text-slate-500 font-mono mt-2">Transmits signal clearance sequence and opens the Live Simulation monitor</p>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right Column: Time Projection Preview -->
+            <div class="lg:col-span-5 space-y-4">
+              <!-- Pre-Flight Projection Box -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-md space-y-3 font-mono">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <span class="text-xs font-bold text-slate-900 uppercase">Estimated Travel Time</span>
+                  <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">LIVE PREVIEW</span>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                  <div class="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500">Normal Traffic Delay:</span>
+                    <span id="preview-normal-eta" class="text-slate-900 font-bold tabular-nums">06m 45s</span>
+                  </div>
+                  <div class="flex justify-between items-center p-3 rounded-xl bg-blue-50/50 border border-blue-200/80 text-blue-900">
+                    <span class="text-blue-700">Emergency Corridor ETA:</span>
+                    <span id="preview-corridor-eta" class="font-bold tabular-nums">02m 15s</span>
+                  </div>
+                  <div class="flex justify-between items-center p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+                    <span class="text-emerald-800">Critical Time Saved:</span>
+                    <span id="preview-time-saved" class="font-bold tabular-nums">04m 30s (-66.7%)</span>
+                  </div>
+                </div>
+
+                <div class="text-[11px] text-slate-500 border-t border-slate-100 pt-3 space-y-1">
+                  <div class="flex justify-between">
+                    <span>Average Emergency Speed:</span>
+                    <span class="text-slate-800 font-semibold">38.0 mph priority route</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Corridor Distance:</span>
+                    <span id="preview-distance-str" class="text-slate-800 font-semibold">0.84 mi (3 Intersections)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Clear Sequence Steps -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-md space-y-2.5 font-mono text-xs">
+                <div class="text-xs font-bold text-slate-900 uppercase border-b border-slate-100 pb-2">
+                  Automated Signal Sequence
+                </div>
+                <div class="space-y-2.5 text-[11px] text-slate-600">
+                  <div class="flex items-start gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-blue-50 text-blue-700 font-bold flex items-center justify-center shrink-0 text-[10px]">1</span>
+                    <span><strong>450m Early Detection:</strong> The system registers the emergency vehicle 25 seconds before arrival.</span>
+                  </div>
+                  <div class="flex items-start gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-blue-50 text-blue-700 font-bold flex items-center justify-center shrink-0 text-[10px]">2</span>
+                    <span><strong>Pedestrian Crosswalk Clearance:</strong> Active walk signs change to a safe Don't-Walk countdown.</span>
+                  </div>
+                  <div class="flex items-start gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-blue-50 text-blue-700 font-bold flex items-center justify-center shrink-0 text-[10px]">3</span>
+                    <span><strong>Cross-Traffic Yellow & Red:</strong> Cross-traffic stops gently behind stop lines with zero abrupt braking.</span>
+                  </div>
+                  <div class="flex items-start gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-blue-50 text-blue-700 font-bold flex items-center justify-center shrink-0 text-[10px]">4</span>
+                    <span><strong>Green Corridor Opened:</strong> The ambulance drives through an open green wave without slowing down.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PORTAL 2: LIVE SIMULATION (MONITOR & TELEMETRY)                            -->
+        <!-- ========================================================================= -->
+        <section id="portal-view-monitor" class="max-w-7xl mx-auto space-y-5 hidden">
+          <!-- 1. Clean KPI Ribbon -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Metric 1: Average Time Saved -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs font-mono">
+              <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Average Time Saved</div>
+              <div class="flex items-baseline gap-2">
+                <span id="kpi-percent-saved" class="text-3xl font-extrabold text-emerald-600 tabular-nums tracking-tight">72.8%</span>
+                <span class="text-[11px] text-slate-500 font-normal">TIME REDUCTION</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-2">
+                Saved vs normal congested traffic delay
+              </div>
+            </div>
+
+            <!-- Metric 2: Average Transit Delta -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs font-mono">
+              <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Corridor Arrival Time</div>
+              <div class="flex items-baseline gap-2">
+                <span id="kpi-time-saved" class="text-3xl font-extrabold text-slate-900 tabular-nums tracking-tight">05m 15s</span>
+                <span class="text-[11px] text-emerald-600 font-bold">SAVED</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-2 flex justify-between">
+                <span>PRIORITY: <strong id="kpi-corridor-eta" class="text-slate-800 tabular-nums">02m 15s</strong></span>
+                <span>NORMAL: <strong id="kpi-normal-eta" class="text-slate-600 tabular-nums">07m 30s</strong></span>
+              </div>
+            </div>
+
+            <!-- Metric 3: Active Corridor Range -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs font-mono">
+              <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Active Corridor Range</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-extrabold text-blue-600 tabular-nums tracking-tight">450m</span>
+                <span class="text-[11px] text-slate-500 font-normal">DETECTION ZONE</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-2">
+                Automated signal detection window
+              </div>
+            </div>
+
+            <!-- Metric 4: Safety Compliance -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs font-mono">
+              <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Safety Compliance</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-extrabold text-emerald-600 tabular-nums tracking-tight">99.8%</span>
+                <span class="text-[11px] text-emerald-600 font-bold">OPTIMAL</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-2 flex justify-between">
+                <span>CONFLICTS: <strong>0 Breaches</strong></span>
+                <span>STATUS: <strong class="text-emerald-700">SECURE</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Simulation Playback Controls Deck -->
+          <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+            <!-- Stage Status -->
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-2 font-bold text-slate-900">
+                <span id="scada-status-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+                <span id="scada-state-label">RUNNING</span>
+              </span>
+              <span class="text-slate-300">|</span>
+              <span class="text-slate-600">CURRENT INTERSECTION: <strong id="scada-active-node-name" class="text-slate-900">Intersection 1 (Maple Ave & 4th St)</strong></span>
+              <span class="text-slate-300">|</span>
+              <span class="text-slate-600">STATUS: <strong id="scada-phase-badge" class="text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200">1. VEHICLE APPROACHING</strong></span>
+            </div>
+
+            <!-- Operator Buttons -->
+            <div class="flex items-center gap-2">
+              <button id="btn-sim-play-pause" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                <span id="label-play-pause">PAUSE</span>
+              </button>
+
+              <button id="btn-sim-step" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-bold cursor-pointer shadow-2xs">
+                STEP ⏭
+              </button>
+
+              <button id="btn-sim-replay" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-bold cursor-pointer shadow-2xs">
+                REPLAY
+              </button>
+
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-100 p-0.5 text-[11px]">
+                <button type="button" class="btn-speed px-2 py-0.5 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer" data-speed="0.5">0.5x</button>
+                <button type="button" class="btn-speed px-2 py-0.5 rounded-lg bg-white text-slate-900 font-bold shadow-2xs cursor-pointer" data-speed="1">1.0x</button>
+                <button type="button" class="btn-speed px-2 py-0.5 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer" data-speed="2">2.0x</button>
+              </div>
+
+              <!-- Export Telemetry Button -->
+              <button id="btn-export-telemetry" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-black text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors" title="Export current telemetry log as CSV audit file">
+                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span id="export-telemetry-label">EXPORT CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Central Simulation Grid: Intersections + Timers + Telemetry -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <!-- Left Region (7 Cols): 2D LiDAR Intersection Simulation, Topology Matrix & Timing Panel -->
+            <div class="lg:col-span-7 space-y-5">
+              <!-- ============================================================= -->
+              <!-- 2D TOP-DOWN LIDAR / BLUEPRINT INTERSECTION SIMULATION MAP    -->
+              <!-- ============================================================= -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3 font-mono">
+                <!-- Top Status & HUD Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Top-Down LiDAR Intersection Monitor</h3>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-bold">PHYSICAL SIMULATION</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-[11px]">
+                    <span class="text-slate-500">JUNCTION: <strong id="lidar-hud-junction-name" class="text-slate-900">Maple Ave & 4th St</strong></span>
+                    <span class="text-slate-300">|</span>
+                    <span class="text-slate-500">DISTANCE: <strong id="lidar-hud-distance" class="text-blue-700 font-bold">450m</strong></span>
+                    <span class="text-slate-300">|</span>
+                    <span class="text-slate-500">CORRIDOR WAVE: <strong id="lidar-hud-wave-status" class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">ACTIVE PRIORITY</strong></span>
+                  </div>
+                </div>
+
+                <!-- 2D Canvas Viewport (Deep Slate LiDAR / Architectural Blueprint) -->
+                <div id="lidar-intersection-viewport" class="relative w-full h-72 sm:h-84 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 shadow-inner select-none flex items-center justify-center">
+                  <!-- Blueprint / LiDAR Grid Overlay -->
+                  <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 pointer-events-none"></div>
+
+                  <!-- LiDAR Radar Range Rings (Concentric circles centered at intersection) -->
+                  <div class="absolute w-44 h-44 rounded-full border border-cyan-500/15 pointer-events-none flex items-center justify-center">
+                    <span class="absolute -top-3 text-[8px] text-cyan-400/50 font-mono tracking-widest">100M BUFFER</span>
+                  </div>
+                  <div class="absolute w-72 h-72 rounded-full border border-cyan-500/10 pointer-events-none flex items-center justify-center">
+                    <span class="absolute -top-3 text-[8px] text-cyan-400/40 font-mono tracking-widest">250M WARNING</span>
+                  </div>
+                  <div class="absolute w-[440px] h-[440px] rounded-full border border-cyan-500/5 pointer-events-none flex items-center justify-center">
+                    <span class="absolute -top-3 text-[8px] text-cyan-400/30 font-mono tracking-widest">450M SENSOR LOOP</span>
+                  </div>
+
+                  <!-- Crosshairs -->
+                  <div class="absolute inset-x-0 top-1/2 h-px bg-cyan-500/10 pointer-events-none"></div>
+                  <div class="absolute inset-y-0 left-1/2 w-px bg-cyan-500/10 pointer-events-none"></div>
+
+                  <!-- ========================================== -->
+                  <!-- ROADWAY SURFACES                           -->
+                  <!-- ========================================== -->
+
+                  <!-- Horizontal Arterial Road (Emergency Green-Wave Corridor: East-West) -->
+                  <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-26 bg-slate-900 border-y-2 border-slate-700/80 flex flex-col justify-between overflow-hidden">
+                    <!-- Top Road Lane (Eastbound Priority Direction) -->
+                    <div class="h-1/2 border-b border-dashed border-slate-500/50 relative flex items-center">
+                      <span class="absolute left-6 text-[8px] text-slate-500/60 font-mono tracking-wider">EASTBOUND ARTERIAL ➔</span>
+                      <span class="absolute right-8 text-[8px] text-slate-500/60 font-mono tracking-wider">EMERGENCY CORRIDOR ➔</span>
+                    </div>
+                    <!-- Bottom Road Lane (Westbound Return Direction) -->
+                    <div class="h-1/2 relative flex items-center">
+                      <span class="absolute left-6 text-[8px] text-slate-500/60 font-mono tracking-wider">WESTBOUND RETURN ➔</span>
+                    </div>
+
+                    <!-- Stop Lines for Corridor Road (Solid Crisp White Lines before Crosswalks) -->
+                    <div class="absolute top-0 bottom-0 left-[calc(50%-56px)] w-1.5 bg-white/90 shadow-xs"></div>
+                    <div class="absolute top-0 bottom-0 right-[calc(50%-56px)] w-1.5 bg-white/90 shadow-xs"></div>
+                  </div>
+
+                  <!-- Vertical Cross-Street (North-South) -->
+                  <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-26 bg-slate-900 border-x-2 border-slate-700/80 flex justify-between overflow-hidden">
+                    <!-- Center Dashed Yellow Divider -->
+                    <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 border-r border-dashed border-amber-400/50"></div>
+
+                    <!-- Cross-Street Direction Labels -->
+                    <span class="absolute top-2 left-1 text-[8px] text-slate-500/60 font-mono rotate-90 origin-top-left">NORTHBOUND ➔</span>
+                    <span class="absolute bottom-2 right-1 text-[8px] text-slate-500/60 font-mono -rotate-90 origin-bottom-right">SOUTHBOUND ➔</span>
+
+                    <!-- Stop Lines for Cross Street (Solid Crisp White Lines before Crosswalks) -->
+                    <div class="absolute left-0 right-0 top-[calc(50%-56px)] h-1.5 bg-white/90 shadow-xs"></div>
+                    <div class="absolute left-0 right-0 bottom-[calc(50%-56px)] h-1.5 bg-white/90 shadow-xs"></div>
+                  </div>
+
+                  <!-- Central Intersection Junction Box (Keep Clear Safety Zone) -->
+                  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-26 h-26 bg-slate-800/80 border-2 border-dashed border-amber-500/30 flex items-center justify-center pointer-events-none">
+                    <div class="text-[8px] font-mono font-bold text-amber-500/40 text-center uppercase tracking-tight">
+                      SAFETY<br/>BUFFER
+                    </div>
+                  </div>
+
+                  <!-- ========================================== -->
+                  <!-- PEDESTRIAN ZEBRA CROSSWALKS (4 ENTRANCES)  -->
+                  <!-- ========================================== -->
+                  <!-- West Crosswalk -->
+                  <div class="absolute top-1/2 -translate-y-1/2 left-[calc(50%-52px)] w-5 h-26 flex flex-col justify-around py-1 pointer-events-none">
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                  </div>
+
+                  <!-- East Crosswalk -->
+                  <div class="absolute top-1/2 -translate-y-1/2 right-[calc(50%-52px)] w-5 h-26 flex flex-col justify-around py-1 pointer-events-none">
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="h-1 bg-slate-300/80 rounded-xs"></div>
+                  </div>
+
+                  <!-- North Crosswalk -->
+                  <div class="absolute left-1/2 -translate-x-1/2 top-[calc(50%-52px)] h-5 w-26 flex justify-around px-1 pointer-events-none">
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                  </div>
+
+                  <!-- South Crosswalk -->
+                  <div class="absolute left-1/2 -translate-x-1/2 bottom-[calc(50%-52px)] h-5 w-26 flex justify-around px-1 pointer-events-none">
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                    <div class="w-1 bg-slate-300/80 rounded-xs"></div>
+                  </div>
+
+                  <!-- Pedestrian Signal Indicators -->
+                  <div class="absolute top-[calc(50%-68px)] left-[calc(50%+60px)] bg-slate-900 border border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-mono flex items-center gap-1 shadow-sm">
+                    <span class="text-slate-400">PED:</span>
+                    <span id="lidar-ped-sign-north" class="text-red-400 font-bold">DONT WALK</span>
+                  </div>
+
+                  <div class="absolute bottom-[calc(50%-68px)] right-[calc(50%+60px)] bg-slate-900 border border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-mono flex items-center gap-1 shadow-sm">
+                    <span class="text-slate-400">PED:</span>
+                    <span id="lidar-ped-sign-south" class="text-red-400 font-bold">DONT WALK</span>
+                  </div>
+
+                  <!-- ========================================== -->
+                  <!-- 4-WAY TRAFFIC SIGNAL HEADS (CRISP GLOWING) -->
+                  <!-- ========================================== -->
+                  <!-- West Signal Head (Arterial Corridor Approach) -->
+                  <div class="absolute top-[calc(50%-76px)] left-[calc(50%-72px)] bg-slate-900/95 border border-slate-600 rounded-lg p-1.5 shadow-md flex items-center gap-1.5 z-10">
+                    <span class="text-[7px] text-slate-400 font-bold">CORRIDOR</span>
+                    <div class="flex items-center gap-1">
+                      <span id="sig-west-red" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-west-yellow" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-west-green" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#10b981] transition-all"></span>
+                    </div>
+                  </div>
+
+                  <!-- East Signal Head (Arterial Corridor Egress) -->
+                  <div class="absolute bottom-[calc(50%-76px)] right-[calc(50%-72px)] bg-slate-900/95 border border-slate-600 rounded-lg p-1.5 shadow-md flex items-center gap-1.5 z-10">
+                    <span class="text-[7px] text-slate-400 font-bold">CORRIDOR</span>
+                    <div class="flex items-center gap-1">
+                      <span id="sig-east-red" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-east-yellow" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-east-green" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#10b981] transition-all"></span>
+                    </div>
+                  </div>
+
+                  <!-- North Signal Head (Cross-Traffic Southbound) -->
+                  <div class="absolute top-[calc(50%-72px)] right-[calc(50%-76px)] bg-slate-900/95 border border-slate-600 rounded-lg p-1.5 shadow-md flex flex-col items-center gap-1 z-10">
+                    <span class="text-[7px] text-slate-400 font-bold">CROSS</span>
+                    <div class="flex flex-col items-center gap-1">
+                      <span id="sig-north-red" class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444] transition-all"></span>
+                      <span id="sig-north-yellow" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-north-green" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                    </div>
+                  </div>
+
+                  <!-- South Signal Head (Cross-Traffic Northbound) -->
+                  <div class="absolute bottom-[calc(50%-72px)] left-[calc(50%-76px)] bg-slate-900/95 border border-slate-600 rounded-lg p-1.5 shadow-md flex flex-col items-center gap-1 z-10">
+                    <span class="text-[7px] text-slate-400 font-bold">CROSS</span>
+                    <div class="flex flex-col items-center gap-1">
+                      <span id="sig-south-red" class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444] transition-all"></span>
+                      <span id="sig-south-yellow" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                      <span id="sig-south-green" class="w-2.5 h-2.5 rounded-full bg-slate-700 transition-all"></span>
+                    </div>
+                  </div>
+
+                  <!-- ========================================== -->
+                  <!-- DYNAMIC CIVILIAN CROSS-TRAFFIC CARS        -->
+                  <!-- ========================================== -->
+                  <div id="civilian-traffic-layer" class="pointer-events-none z-10">
+                    <!-- Southbound Lane (Top -> Down, Right of Centerline) -->
+                    <!-- S1: Lead Southbound Car -->
+                    <div id="civ-car-s1" class="absolute left-[calc(50%+14px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-600 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% - 92px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-01</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                    </div>
+
+                    <!-- S2: Second Southbound Car -->
+                    <div id="civ-car-s2" class="absolute left-[calc(50%+14px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-500 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% - 136px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-02</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                    </div>
+
+                    <!-- S3: Third Southbound Car -->
+                    <div id="civ-car-s3" class="absolute left-[calc(50%+14px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-600 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% - 180px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-03</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                    </div>
+
+                    <!-- Northbound Lane (Bottom -> Up, Left of Centerline) -->
+                    <!-- N1: Lead Northbound Car -->
+                    <div id="civ-car-n1" class="absolute left-[calc(50%-24px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-600 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% + 56px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-04</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                    </div>
+
+                    <!-- N2: Second Northbound Car -->
+                    <div id="civ-car-n2" class="absolute left-[calc(50%-24px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-500 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% + 100px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-05</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                    </div>
+
+                    <!-- N3: Third Northbound Car -->
+                    <div id="civ-car-n3" class="absolute left-[calc(50%-24px)] w-6 h-9 rounded-xs border border-slate-400/70 bg-slate-600 shadow-md flex flex-col justify-between p-0.5 pointer-events-none transition-none" style="top: calc(50% + 144px);">
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                        <span class="w-1 h-1 rounded-full bg-amber-100/90 shadow-[0_0_4px_#fef3c7]"></span>
+                      </div>
+                      <span class="text-[6px] font-mono text-center text-slate-300 font-bold select-none leading-none">C-06</span>
+                      <div class="flex justify-between px-0.5">
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                        <span class="w-1 h-1 rounded-full bg-red-950 civ-brake"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ========================================== -->
+                  <!-- 450M INGRESS ADVANCE SENSOR LOOP           -->
+                  <!-- ========================================== -->
+                  <div class="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none z-10">
+                    <span id="lidar-sensor-loop-pulse" class="w-4 h-16 border-2 border-dashed border-cyan-400/70 rounded bg-cyan-500/10 flex items-center justify-center">
+                      <span class="text-[7px] text-cyan-300 font-mono -rotate-90 whitespace-nowrap">450M DETECTOR</span>
+                    </span>
+                  </div>
+
+                  <!-- ========================================== -->
+                  <!-- THE EMERGENCY VEHICLE (LIDAR RECTANGULAR BLIP) -->
+                  <!-- ========================================== -->
+                  <div 
+                    id="lidar-emergency-vehicle" 
+                    class="absolute top-1/2 -translate-y-1/2 -translate-y-3.5 w-14 h-7 rounded-md bg-slate-900 border-2 border-blue-400 shadow-[0_0_16px_rgba(59,130,246,0.6)] z-20 flex items-center justify-between px-1.5 transition-none pointer-events-none"
+                    style="left: -12%;"
+                  >
+                    <!-- Forward Headlight Cones -->
+                    <div class="absolute -right-8 top-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-cyan-300/35 to-transparent clip-path-polygon pointer-events-none" style="clip-path: polygon(0% 30%, 100% 0%, 100% 100%, 0% 70%);"></div>
+
+                    <!-- Left Strobe Beacon (Red) -->
+                    <div class="flex items-center gap-0.5">
+                      <span id="beacon-strobe-red" class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-ping"></span>
+                    </div>
+
+                    <!-- Vehicle ID Tag -->
+                    <span class="text-[8px] font-bold text-white font-mono tracking-tighter">EMS-01</span>
+
+                    <!-- Right Strobe Beacon (Blue) -->
+                    <div class="flex items-center gap-0.5">
+                      <span id="beacon-strobe-blue" class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_12px_#38bdf8] animate-ping"></span>
+                    </div>
+                  </div>
+
+                  <!-- Bottom HUD Status Overlay -->
+                  <div class="absolute bottom-2.5 inset-x-3 flex items-center justify-between text-[9px] font-mono text-slate-400 bg-slate-950/85 px-3 py-1 rounded border border-slate-800/80 backdrop-blur-xs">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                      <span>ACTIVE PREEMPTION BEACON // 38.0 MPH PRIORITY CORRIDOR</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span>TIME TO JUNCTION: <strong id="lidar-hud-time-remaining" class="text-white font-bold">07.2s</strong></span>
+                      <span class="text-slate-600">|</span>
+                      <span>CROSS-TRAFFIC: <strong id="lidar-hud-cross-traffic" class="text-emerald-400 font-bold">FLOWING</strong></span>
+                      <span class="text-slate-600">|</span>
+                      <span>SAFETY CLEARANCE: <strong id="lidar-hud-safety-clearance" class="text-emerald-400 font-bold">VERIFIED</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- A. Corridor Intersection Matrix -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4 font-mono">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Corridor Intersections Live Matrix</h3>
+                  </div>
+                  <span id="topology-summary" class="text-[11px] text-slate-500">3 INTERSECTIONS ACTIVE // SIGNALS SYNCHRONIZED</span>
+                </div>
+
+                <!-- Clean Visual Intersection Pipeline with D3.js SVG Street Map Overlay -->
+                <div class="p-4 bg-slate-900/5 border border-slate-200/80 rounded-xl relative overflow-hidden min-h-[175px] flex flex-col justify-between">
+                  <!-- D3.js SVG Map Overlay (subtle, semi-transparent, behind nodes) -->
+                  <svg id="topology-map-svg" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-45" preserveAspectRatio="none"></svg>
+
+                  <div class="flex items-center justify-between relative z-10 mb-2">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1.5 font-mono">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                      <span>Municipal Street Grid & Emergency Corridor Topology</span>
+                    </div>
+                    <div class="text-[9px] font-mono text-slate-600 bg-white/90 px-2 py-0.5 rounded border border-slate-200/80 shadow-2xs flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>D3.JS VECTOR STREET GRID</span>
+                    </div>
+                  </div>
+
+                  <div id="topology-pipeline-container" class="flex items-center justify-between relative z-10 py-2 w-full">
+                    <!-- Nodes injected dynamically via JS -->
+                  </div>
+                </div>
+
+                <!-- Live Data Table -->
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="border-b border-slate-200 bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider">
+                        <th class="py-2.5 px-3">Intersection</th>
+                        <th class="py-2.5 px-3">Cross-Street</th>
+                        <th class="py-2.5 px-3">Traffic Light</th>
+                        <th class="py-2.5 px-3">Priority Lock</th>
+                        <th class="py-2.5 px-3">Sensor Delay</th>
+                        <th class="py-2.5 px-3">Queue Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="node-matrix-tbody" class="divide-y divide-slate-100 text-[11px]">
+                      <!-- Table rows dynamically populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- B. Signal Timing & Safety Countdown Grid -->
+              <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4 font-mono">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Signal Timing & Safety Clearance Countdown</h3>
+                  </div>
+                  <span id="active-ring-barrier" class="text-[10px] text-slate-600 font-bold bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">INTERLOCK ACTIVE</span>
+                </div>
+
+                <!-- Live Countdown Timer Strip -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-[10px] text-slate-500 block uppercase">Green Wave Open</span>
+                    <span id="timer-green-ext" class="text-xl font-bold text-emerald-600 tabular-nums block my-0.5">00.0s</span>
+                    <span id="status-green-ext" class="text-[10px] text-slate-400 uppercase">HOLDING OPEN</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-[10px] text-slate-500 block uppercase">Cross-Traffic Yellow</span>
+                    <span id="timer-yellow-change" class="text-xl font-bold text-amber-600 tabular-nums block my-0.5">03.0s</span>
+                    <span id="status-yellow-change" class="text-[10px] text-slate-400 uppercase">SLOWING SAFELY</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-[10px] text-slate-500 block uppercase">All-Red Safety Window</span>
+                    <span id="timer-all-red" class="text-xl font-bold text-red-600 tabular-nums block my-0.5">02.0s</span>
+                    <span id="status-all-red" class="text-[10px] text-slate-400 uppercase">BOX CLEAR BUFFER</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-[10px] text-slate-500 block uppercase">Crosswalk Clearance</span>
+                    <span id="timer-ped-clearance" class="text-xl font-bold text-slate-800 tabular-nums block my-0.5">12.0s</span>
+                    <span id="status-ped-clearance" class="text-[10px] text-slate-400 uppercase">PEDESTRIAN SAFE</span>
+                  </div>
+                </div>
+
+                <!-- Signal Allocation Overview -->
+                <div class="overflow-x-auto pt-1">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-[10px] text-slate-500 uppercase bg-slate-50">
+                        <th class="py-2 px-3">Signal Stream</th>
+                        <th class="py-2 px-3">Target Traffic</th>
+                        <th class="py-2 px-3">Green Time</th>
+                        <th class="py-2 px-3">Current Light</th>
+                        <th class="py-2 px-3">Safety Status</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-[11px]">
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Emergency Corridor</td>
+                        <td class="py-2 px-3 text-slate-600">Ambulance Route (East-West)</td>
+                        <td class="py-2 px-3 text-slate-500 tabular-nums">45.0s</td>
+                        <td id="phase-row-2-state" class="py-2 px-3 font-bold text-emerald-600">PREEMPT GREEN EXT</td>
+                        <td class="py-2 px-3 text-slate-700">LOCKED (CLEAR PATH)</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Cross-Street Traffic</td>
+                        <td class="py-2 px-3 text-slate-600">Side Streets (North-South)</td>
+                        <td class="py-2 px-3 text-slate-500 tabular-nums">25.0s</td>
+                        <td id="phase-row-4-state" class="py-2 px-3 font-bold text-red-600">SAFE STOP (RED LIGHT)</td>
+                        <td class="py-2 px-3 text-slate-700">PREVENTS INTERSECTION BOX TRAPS</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Opposite Direction</td>
+                        <td class="py-2 px-3 text-slate-600">Opposing Mainline Lane</td>
+                        <td class="py-2 px-3 text-slate-500 tabular-nums">40.0s</td>
+                        <td id="phase-row-6-state" class="py-2 px-3 text-slate-600">NORMAL FLOW</td>
+                        <td class="py-2 px-3 text-slate-700">RESTORATION CYCLE ARMED</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Region (5 Cols): Real-Time Telemetry Stream -->
+            <div class="lg:col-span-5 bg-slate-950 text-slate-100 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between space-y-4 font-mono">
+              <!-- Stream Header -->
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
+                  <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">Live Safety Event Stream</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="log-count-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">0 Events</span>
+                  <button id="btn-terminal-export" class="text-[10px] px-2.5 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold transition-colors cursor-pointer flex items-center gap-1 border border-slate-700">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    CSV
+                  </button>
+                  <button id="btn-clear-log" class="text-[10px] text-slate-400 hover:text-white transition-colors cursor-pointer">Clear</button>
+                </div>
+              </div>
+
+              <!-- Stream Filter Tags -->
+              <div class="flex items-center gap-1.5 text-[10px] text-slate-400 pb-2 border-b border-slate-900">
+                <span class="text-slate-500">CATEGORY:</span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-800 text-cyan-300">DETECTION</span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-800 text-amber-300">CROSSWALK</span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-800 text-emerald-300">CLEARANCE</span>
+              </div>
+
+              <!-- Scrolling Terminal Stream -->
+              <div id="safeguard-terminal-log" class="flex-1 min-h-[440px] max-h-[480px] overflow-y-auto text-[11px] leading-relaxed space-y-1.5 pr-1 terminal-scroll select-text">
+                <!-- Log entries injected here -->
+              </div>
+
+              <!-- Stream Status Bar -->
+              <div class="pt-2.5 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>FEED ACTIVE // ALL INTERLOCKS PASS</span>
+                </span>
+                <span id="terminal-scroll-status" class="text-slate-500">AUTO-SCROLL ON</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PORTAL 3: IMPACT & ABOUT (REAL-WORLD SAFETY RESEARCH)                      -->
+        <!-- ========================================================================= -->
+        <section id="portal-view-impact" class="max-w-6xl mx-auto space-y-6 hidden">
+          <!-- Section Header -->
+          <div class="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-slate-900">The Human Cost of Traffic Delays</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Real-world medical and civil engineering research on emergency travel times, intersection collisions, and life-safety.</p>
+            </div>
+            <span class="text-xs font-mono text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-xl self-start md:self-auto shrink-0 shadow-2xs">PORTAL 03 // RESEARCH</span>
+          </div>
+
+          <!-- Key Statistical Impact Summary Strip -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+            <div class="p-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xs">
+              <span class="text-[10px] text-slate-500 block uppercase">Survival Drop per Minute</span>
+              <span class="text-2xl font-extrabold text-red-600 tabular-nums block my-0.5">-10% / MIN</span>
+              <span class="text-[11px] text-slate-500">Survival reduction per 60s delay in acute cardiac arrest</span>
+            </div>
+            <div class="p-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xs">
+              <span class="text-[10px] text-slate-500 block uppercase">Intersection Crash Risk</span>
+              <span class="text-2xl font-extrabold text-amber-600 tabular-nums block my-0.5">4.8x MULTIPLE</span>
+              <span class="text-[11px] text-slate-500">Forced red-light crossings without signal preemption</span>
+            </div>
+            <div class="p-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xs">
+              <span class="text-[10px] text-slate-500 block uppercase">Smart Corridor Time Saved</span>
+              <span class="text-2xl font-extrabold text-emerald-600 tabular-nums block my-0.5">72.8% DELAY</span>
+              <span class="text-[11px] text-slate-500">Average arterial clearance time reduction</span>
+            </div>
+            <div class="p-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xs">
+              <span class="text-[10px] text-slate-500 block uppercase">Safety Clearance Record</span>
+              <span class="text-2xl font-extrabold text-blue-600 tabular-nums block my-0.5">99.8% NOMINAL</span>
+              <span class="text-[11px] text-slate-500">Verified zero-incursion safety clearance rate</span>
+            </div>
+          </div>
+
+          <!-- The 3 Core Structured Callout Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            <!-- Card 1: The Ambulance Bottleneck -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-slate-300 transition-all">
+              <div class="space-y-3">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                  <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-red-100">01</div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900">The Ambulance Bottleneck</h3>
+                    <div class="text-[10px] font-mono text-slate-500">CRITICAL SECONDS LOST IN DENSE TRAFFIC</div>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  In acute cardiac arrest, stroke, and traumatic bleeding, every sixty seconds lost reduces patient resuscitation survival by 7% to 10%. Emergency responders lose valuable minutes at uncoordinated city intersections where civilian traffic queues are compressed bumper-to-bumper.
+                </p>
+                <div class="p-3.5 rounded-xl bg-red-50/70 border border-red-200 text-xs space-y-1.5 font-mono text-red-950">
+                  <div class="font-bold text-[11px] uppercase tracking-wide text-red-900">The "Box Trap" Problem</div>
+                  <p class="text-[11px] text-red-800 leading-snug">
+                    When motorists wait at a red light, adjacent lanes are completely blocked. Drivers physically cannot pull aside, leaving ambulances completely trapped despite sirens blaring.
+                  </p>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-slate-100 text-[10px] font-mono text-slate-500 flex justify-between">
+                <span>AVERAGE IMPACT:</span>
+                <span class="font-bold text-red-600">4.5m–7.0m DELAY PER ROUTE</span>
+              </div>
+            </div>
+
+            <!-- Card 2: The Safety Paradox -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-slate-300 transition-all">
+              <div class="space-y-3">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                  <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-amber-100">02</div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900">The Safety Paradox</h3>
+                    <div class="text-[10px] font-mono text-slate-500">THE HAZARDS OF ABRUPT SIGNAL DROPS</div>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  Ad-hoc intersection crossings are full of danger: emergency vehicles are 4.8 times more likely to be involved in a crash than regular traffic. When traffic signals change abruptly without clear warnings, secondary crashes frequently occur.
+                </p>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs space-y-1.5 font-mono text-amber-950">
+                  <div class="font-bold text-[11px] uppercase tracking-wide text-amber-900">Panic Braking & Crosswalk Risks</div>
+                  <p class="text-[11px] text-amber-800 leading-snug">
+                    Dropping cross-traffic lights suddenly causes panic stops and rear-end crashes. At the same time, pedestrians halfway across the street without a countdown buffer are left stranded and endangered.
+                  </p>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-slate-100 text-[10px] font-mono text-slate-500 flex justify-between">
+                <span>SAFETY REQUIREMENT:</span>
+                <span class="font-bold text-amber-700">3.0s YELLOW + 2.0s BUFFER</span>
+              </div>
+            </div>
+
+            <!-- Card 3: The Municipal Solution -->
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-slate-300 transition-all">
+              <div class="space-y-3">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-emerald-100">03</div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900">The Municipal Solution</h3>
+                    <div class="text-[10px] font-mono text-slate-500">AUTOMATED PREEMPTION & SAFE CLEARANCE</div>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  Automated corridor clearance solves both problems. Emergency vehicles are detected 450 meters away, giving city signals ample time to safely transition conflicting traffic without alarming motorists.
+                </p>
+                <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs space-y-1.5 font-mono text-emerald-950">
+                  <div class="font-bold text-[11px] uppercase tracking-wide text-emerald-900">Advance Queue Clearance</div>
+                  <p class="text-[11px] text-emerald-800 leading-snug">
+                    Crosswalks transition safely to solid don't-walk hands, cross-traffic slows down at standard yellow lights, and cars ahead of the ambulance are cleared before the unit even reaches the intersection.
+                  </p>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-slate-100 text-[10px] font-mono text-slate-500 flex justify-between">
+                <span>PROVEN BENEFIT:</span>
+                <span class="font-bold text-emerald-700">70%+ RESPONSE TIME SAVED</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparative Matrix Table -->
+          <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4 font-mono">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Comparison: Unpreempted Traffic vs. Smart Priority Corridors</h3>
+              <span class="text-[10px] text-slate-500 font-semibold">URBAN TRANSIT SAFETY ANALYSIS</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[10px] text-slate-500 uppercase">
+                    <th class="py-2.5 px-3">Evaluation Metric</th>
+                    <th class="py-2.5 px-3 text-red-600">Uncoordinated Traffic Delays</th>
+                    <th class="py-2.5 px-3 text-emerald-600">Smart Priority Corridors</th>
+                    <th class="py-2.5 px-3">Real-World Advantage</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-[11px]">
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900">Average Emergency Speed</td>
+                    <td class="py-3 px-3 text-red-600">11.0 – 18.0 mph (Stop-and-Go)</td>
+                    <td class="py-3 px-3 text-emerald-600 font-bold">38.0 mph (Continuous Green Wave)</td>
+                    <td class="py-3 px-3 text-slate-700 font-semibold">+200% Faster Travel Time</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900">Intersection Collision Risk</td>
+                    <td class="py-3 px-3 text-red-600">High Risk (Blind Red-Light Entry)</td>
+                    <td class="py-3 px-3 text-emerald-600 font-bold">Zero Conflicts (Full All-Red Window)</td>
+                    <td class="py-3 px-3 text-slate-700 font-semibold">99.8% Accident Prevention</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900">Pedestrian Crosswalk Safety</td>
+                    <td class="py-3 px-3 text-red-600">Stranding Risk Mid-Street</td>
+                    <td class="py-3 px-3 text-emerald-600 font-bold">Full Countdown Clearance Buffer</td>
+                    <td class="py-3 px-3 text-slate-700 font-semibold">100% Pedestrian Protection</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900">Civilian Motorist Reactions</td>
+                    <td class="py-3 px-3 text-red-600">Panic Braking & Gridlock</td>
+                    <td class="py-3 px-3 text-emerald-600 font-bold">Standard Yellow Signal Deceleration</td>
+                    <td class="py-3 px-3 text-slate-700 font-semibold">Eliminates Secondary Crashes</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900">Resuscitation Window</td>
+                    <td class="py-3 px-3 text-red-600">Critical Delays (>10 mins)</td>
+                    <td class="py-3 px-3 text-emerald-600 font-bold">Arrival Within Golden 10 Minutes</td>
+                    <td class="py-3 px-3 text-slate-700 font-semibold">+35% Acute Patient Survival</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span class="text-[11px] text-slate-500">Ready to configure priority timing parameters and simulate real-time signal sequences?</span>
+              <button id="btn-impact-launch-dispatch" class="px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-600/25">
+                <span>Configure Priority Corridor</span>
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- FOOTER / SYSTEM ASSUMPTIONS & DISCLAIMER                                  -->
+        <!-- ========================================================================= -->
+        <footer class="mt-8 pt-6 border-t border-slate-200 text-xs text-slate-600 space-y-4 max-w-7xl mx-auto font-mono">
+          <!-- Assumptions Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+              <span class="font-bold text-slate-900 block mb-1 text-[11px]">01. Kinematic Velocity Assumption</span>
+              <p class="text-[11px] text-slate-600 leading-relaxed">Emergency transit modeled at calibrated 38.0 mph priority arterial speed vs 11–25 mph congested baseline.</p>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+              <span class="font-bold text-slate-900 block mb-1 text-[11px]">02. Standard Signal Safety Timing</span>
+              <p class="text-[11px] text-slate-600 leading-relaxed">Enforces 3.0s vehicular yellow clearance and 2.0s verified all-red safety buffer before granting priority.</p>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+              <span class="font-bold text-slate-900 block mb-1 text-[11px]">03. Automated Advance Detection</span>
+              <p class="text-[11px] text-slate-600 leading-relaxed">Simulates 450m advance detection loops with priority lock confirmation and post-clearance recovery.</p>
+            </div>
+          </div>
+
+          <!-- Regulatory Compliance Disclaimer -->
+          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 flex items-start gap-3 text-amber-900">
+            <svg class="w-5 h-5 text-amber-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div class="text-[11px] leading-relaxed">
+              <strong>Theoretical simulation only. Does not interface with live traffic hardware.</strong>
+              <span> Designed exclusively for municipal route evaluation, signal engineer timing optimization, and emergency logistics planning.</span>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Vanilla JavaScript Entry Point -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
